@@ -14,17 +14,17 @@ target_compile_definitions(cb_tests PRIVATE CB_TEST_DATA_DIR="${CB_TEST_DATA_DIR
 target_link_libraries(cb_tests PRIVATE cb_lib GTest::gtest_main)
 cb_set_warnings(cb_tests)
 
-# Separate binary: it replaces global operator new to count allocations, which must not
-# leak into the other tests.
-add_executable(cb_alloc_test alloc/test_alloc.cpp)
-target_include_directories(cb_alloc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-target_compile_definitions(cb_alloc_test PRIVATE CB_TEST_DATA_DIR="${CB_TEST_DATA_DIR}")
-target_link_libraries(cb_alloc_test PRIVATE cb_lib GTest::gtest)
-cb_set_warnings(cb_alloc_test)
-
 include(GoogleTest)
 gtest_discover_tests(cb_tests DISCOVERY_TIMEOUT 60)
-# ASan/TSan replace operator new themselves; counting is meaningless there.
+
+# Separate binary: it replaces global operator new to count allocations, which must not
+# leak into the other tests. ASan/TSan define operator new in their runtime, so the binary
+# would not even link there (and counting would be meaningless) - build it only without one.
 if(CB_SANITIZER STREQUAL "")
+  add_executable(cb_alloc_test alloc/test_alloc.cpp)
+  target_include_directories(cb_alloc_test PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
+  target_compile_definitions(cb_alloc_test PRIVATE CB_TEST_DATA_DIR="${CB_TEST_DATA_DIR}")
+  target_link_libraries(cb_alloc_test PRIVATE cb_lib GTest::gtest)
+  cb_set_warnings(cb_alloc_test)
   gtest_discover_tests(cb_alloc_test DISCOVERY_TIMEOUT 60)
 endif()

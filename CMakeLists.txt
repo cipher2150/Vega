@@ -65,7 +65,12 @@ if(CB_BUILD_SERVICE)
   target_link_libraries(cb_net PUBLIC cb_lib Boost::beast OpenSSL::SSL OpenSSL::Crypto)
   cb_set_warnings(cb_net)
 
-  add_executable(cbook src/app/main.cpp src/app/alloc_hooks.cpp)
+  add_executable(cbook src/app/main.cpp)
+  # TSan/ASan define global operator new/delete in their runtime; a second definition is a
+  # link error. Under a sanitizer the per-thread allocation counters simply read zero.
+  if(CB_SANITIZER STREQUAL "")
+    target_sources(cbook PRIVATE src/app/alloc_hooks.cpp)
+  endif()
   target_link_libraries(cbook PRIVATE cb_net)
   cb_set_warnings(cbook)
 endif()
