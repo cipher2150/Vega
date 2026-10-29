@@ -1,0 +1,14 @@
+{
+  "venues": {
+    "coinbase": { "enabled": true, "url": "wss://advanced-trade-ws.coinbase.com", "horizon_bp": 200, "min_levels": 20 },
+    "kraken":   { "enabled": true, "url": "wss://ws.kraken.com/v2", "depth": 25 },
+    "okx":      { "enabled": true, "url": "wss://ws.okx.com/ws/v5/public" },
+    "bybit":    { "enabled": true, "url": "wss://stream.bybit.com/v5/public/spot", "depth": 50 }
+  },
+  "consolidated_levels_per_venue": 20,
+  "imbalance_levels": 10,
+  "book_cpu": -1,
+  "idle": "backoff",
+  "publish_hz": 20,
+  "http": { "bind": "127.0.0.1", "port": 8080, "web_root": "web" }
+}

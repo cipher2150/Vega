@@ -1,0 +1,41 @@
+# systemd unit: alternative to Docker. Install the binary to /opt/cbook/bin, the web page
+# to /opt/cbook/web and the config to /etc/cbook/config.json (see docs/DEPLOY.md).
+[Unit]
+Description=Consolidated Book market data service
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=cbook
+Group=cbook
+WorkingDirectory=/opt/cbook
+ExecStart=/opt/cbook/bin/cbook live --config /etc/cbook/config.json
+Restart=always
+RestartSec=2
+# SIGINT lets the process close sockets and flush a recording cleanly.
+KillSignal=SIGINT
+TimeoutStopSec=10
+
+# The book thread pins itself to "book_cpu" (3) via pthread affinity. For true isolation
+# (no other task ever scheduled there) boot with isolcpus=3 nohz_full=3; see docs/DEPLOY.md.
+LimitNOFILE=65536
+
+# Hardening: the service needs outbound TLS and one listening port, nothing else.
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ProtectKernelTunables=true
+ProtectKernelModules=true
+ProtectControlGroups=true
+RestrictAddressFamilies=AF_INET AF_INET6 AF_UNIX
+RestrictNamespaces=true
+LockPersonality=true
+MemoryDenyWriteExecute=true
+# Writable state dir (recordings): systemd creates /var/lib/cbook owned by the service user.
+StateDirectory=cbook
+
+[Install]
+WantedBy=multi-user.target

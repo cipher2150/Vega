@@ -1,0 +1,7 @@
+build/
+.venv/
+.cache/
+compile_commands.json
+*.cbrec.tmp
+.DS_Store
+recordings/

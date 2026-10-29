@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Consolidated Book</title>
+<style>
+  :root {
+    --bg: #0e1116; --panel: #161b22; --line: #262d36; --text: #d7dde4; --muted: #8b949e;
+    --bid: #2ea043; --ask: #e5534b; --warn: #d29922;
+    --coinbase: #3d7bf7; --kraken: #8e6cff; --okx: #c9d1d9; --bybit: #f7a600;
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font-size: 13px; }
+  header { display: flex; align-items: center; gap: 16px; padding: 10px 16px; border-bottom: 1px solid var(--line); flex-wrap: wrap; }
+  header h1 { font-size: 15px; margin: 0; font-weight: 600; }
+  .pill { padding: 2px 8px; border-radius: 10px; background: var(--panel); border: 1px solid var(--line); color: var(--muted); }
+  .pill.ok { color: var(--bid); border-color: var(--bid); }
+  .pill.bad { color: var(--ask); border-color: var(--ask); }
+  .tabs button { background: var(--panel); color: var(--text); border: 1px solid var(--line); padding: 4px 10px; cursor: pointer; font: inherit; }
+  .tabs button.active { border-color: var(--text); }
+  main { display: grid; grid-template-columns: minmax(320px, 420px) 1fr; gap: 12px; padding: 12px 16px; }
+  @media (max-width: 900px) { main { grid-template-columns: 1fr; } }
+  section { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 10px 12px; min-width: 0; }
+  h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 0 0 8px; font-weight: 600; }
+  canvas { width: 100%; display: block; }
+  .signals { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 8px; }
+  .sig { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  .sig .k { color: var(--muted); font-size: 11px; }
+  .sig .v { font-size: 16px; margin-top: 2px; white-space: nowrap; }
+  .sig .s { color: var(--muted); font-size: 11px; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { text-align: right; padding: 3px 6px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  th:first-child, td:first-child, th:nth-child(2), td:nth-child(2) { text-align: left; }
+  th { color: var(--muted); font-weight: 500; font-size: 11px; }
+  .live { color: var(--bid); } .stale { color: var(--ask); } .syncing, .connecting { color: var(--warn); }
+  .swatch { display: inline-block; width: 9px; height: 9px; border-radius: 2px; margin-right: 6px; vertical-align: middle; }
+  .wide { grid-column: 1 / -1; }
+  .scroll { overflow-x: auto; }
+  .hist { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 10px; }
+  .hist .cell { border: 1px solid var(--line); border-radius: 4px; padding: 6px 8px; }
+  .hist .title { display: flex; justify-content: space-between; color: var(--muted); font-size: 11px; }
+  .note { color: var(--muted); font-size: 11px; margin-top: 8px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Consolidated Book</h1>
+  <div class="tabs" id="tabs"></div>
+  <span class="pill" id="conn">connecting…</span>
+  <span class="pill" id="fx">USDT/USD –</span>
+  <span class="pill" id="seq">seq –</span>
+</header>
+<main>
+  <section>
+    <h2>Consolidated top of book <span id="legend"></span></h2>
+    <canvas id="ladder" height="560"></canvas>
+  </section>
+  <div style="display:grid; gap:12px; min-width:0">
+    <section>
+      <h2>Signals</h2>
+      <div class="signals" id="signals"></div>
+      <div class="note">USDT venues are converted to USD at the live Kraken USDT/USD mid; if that feed is stale they are excluded rather than guessed. A negative cross-venue spread ignores fees.</div>
+    </section>
+    <section class="scroll">
+      <h2>Venue health</h2>
+      <table id="health"></table>
+      <div class="note">lag = local receive wall time − exchange timestamp = one-way latency + clock offset (inseparable without a round trip); "min" is the 60 s minimum. Kraken's NTP-style offset comes from ping/pong time_in/time_out, ± RTT/2.</div>
+    </section>
+  </div>
+  <section class="wide">
+    <h2>Pipeline latency (this process, from frame received)</h2>
+    <div class="hist" id="hist"></div>
+    <div class="note" id="clocknote"></div>
+  </section>
+</main>
+<script src="app.js"></script>
+</body>
+</html>

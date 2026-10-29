@@ -1,0 +1,23 @@
+replay bench/data/bench_session_2026-10-29.cbrec.gz (inline)
+  records 95114  frames 95106  bytes 47659053  wall 0.189 s
+  throughput 502995 frames/s  252.1 MB/s  500075 book-messages/s  3113670 events/s
+  clock: 41.67 ns/tick (24000000 Hz)
+  stage                count       mean       p50       p99     p99.9        max   (ns; mean = total/count)
+  parse/coinbase        7723     3588.8      1833     14625     27292    4512042
+  parse/kraken         65783      243.2       208       708       875     268625
+  parse/okx             4620     1950.5      1125     11625     27292     427458
+  parse/bybit          16965      480.0       333      2458      4792       9750
+  queue                94554       66.8        42       417      1125      17375
+  book                 94554      530.6       333      4125     11625    1995167
+  signal               94554      293.7       250       792      1208      52750
+  publish              94554      391.4       333       875      1000    2137250
+  e2e                  94554     1924.8      1167     11625     29958    4657000
+  coinbase BTC-USD  live    msgs     4420  ck_ok       0  ck_fail 0  resyncs 0  last_reason none
+  coinbase ETH-USD  live    msgs     3068  ck_ok       0  ck_fail 0  resyncs 0  last_reason none
+  kraken   BTC-USD  live    msgs    30409  ck_ok   30409  ck_fail 0  resyncs 0  last_reason none
+  kraken   ETH-USD  live    msgs    34242  ck_ok   34242  ck_fail 0  resyncs 0  last_reason none
+  kraken   USDT-USD live    msgs      848  ck_ok     848  ck_fail 0  resyncs 0  last_reason none
+  okx      BTC-USD  live    msgs     2306  ck_ok       0  ck_fail 0  resyncs 0  last_reason none
+  okx      ETH-USD  live    msgs     2312  ck_ok       0  ck_fail 0  resyncs 0  last_reason none
+  bybit    BTC-USD  live    msgs     8809  ck_ok       0  ck_fail 0  resyncs 0  last_reason none
+  bybit    ETH-USD  live    msgs     8140  ck_ok       0  ck_fail 0  resyncs 0  last_reason none

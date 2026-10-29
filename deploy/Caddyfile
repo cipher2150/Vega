@@ -1,0 +1,15 @@
+# Caddy terminates HTTPS (automatic Let's Encrypt certificate) and proxies both the page
+# and the /ws WebSocket to the service on localhost. Replace the hostname with yours, e.g.
+# a free <public-ip-with-dashes>.sslip.io name if you do not own a domain.
+cbook.example.com {
+	encode gzip
+	reverse_proxy 127.0.0.1:8080
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		Referrer-Policy "no-referrer"
+	}
+	log {
+		output file /var/log/caddy/cbook.log
+	}
+}

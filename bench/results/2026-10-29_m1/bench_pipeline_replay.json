@@ -1,0 +1,110 @@
+{
+  "context": {
+    "date": "2026-10-29T21:55:04+05:30",
+    "host_name": "Rajshekhars-MacBook-Air.local",
+    "executable": "./build/release/bench/bench_pipeline_replay",
+    "num_cpus": 8,
+    "mhz_per_cpu": 24,
+    "cpu_scaling_enabled": false,
+    "caches": [
+      {
+        "type": "Data",
+        "level": 1,
+        "size": 65536,
+        "num_sharing": 0
+      },
+      {
+        "type": "Instruction",
+        "level": 1,
+        "size": 131072,
+        "num_sharing": 0
+      },
+      {
+        "type": "Unified",
+        "level": 2,
+        "size": 4194304,
+        "num_sharing": 1
+      }
+    ],
+    "load_avg": [3.5542,7.30713,7.83691],
+    "library_version": "v1.10.0",
+    "library_build_type": "release",
+    "json_schema_version": 1,
+    "main_thread_pinned": "no",
+    "main_thread_qos": "USER_INTERACTIVE"
+  },
+  "benchmarks": [
+    {
+      "name": "BM_ReplayInline/min_time:2.000/real_time_mean",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_ReplayInline/min_time:2.000/real_time",
+      "run_type": "aggregate",
+      "repetitions": 5,
+      "threads": 1,
+      "aggregate_name": "mean",
+      "aggregate_unit": "time",
+      "iterations": 5,
+      "real_time": 2.3259799461177391e+01,
+      "cpu_time": 2.3248451239669468e+01,
+      "time_unit": "ms",
+      "book_msgs/s": 4.2472457430371642e+05,
+      "bytes_per_second": 4.5986514799559158e+08,
+      "frames/s": 4.2863690715740994e+05
+    },
+    {
+      "name": "BM_ReplayInline/min_time:2.000/real_time_median",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_ReplayInline/min_time:2.000/real_time",
+      "run_type": "aggregate",
+      "repetitions": 5,
+      "threads": 1,
+      "aggregate_name": "median",
+      "aggregate_unit": "time",
+      "iterations": 5,
+      "real_time": 2.3255804752138339e+01,
+      "cpu_time": 2.3244462809917405e+01,
+      "time_unit": "ms",
+      "book_msgs/s": 4.2479716807441972e+05,
+      "bytes_per_second": 4.5994374798044705e+08,
+      "frames/s": 4.2871016962263029e+05
+    },
+    {
+      "name": "BM_ReplayInline/min_time:2.000/real_time_stddev",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_ReplayInline/min_time:2.000/real_time",
+      "run_type": "aggregate",
+      "repetitions": 5,
+      "threads": 1,
+      "aggregate_name": "stddev",
+      "aggregate_unit": "time",
+      "iterations": 5,
+      "real_time": 2.4016362150423506e-02,
+      "cpu_time": 2.3178874307380640e-02,
+      "time_unit": "ms",
+      "book_msgs/s": 4.3847919712286154e+02,
+      "bytes_per_second": 4.7475779142632300e+05,
+      "frames/s": 4.4251823012736565e+02
+    },
+    {
+      "name": "BM_ReplayInline/min_time:2.000/real_time_cv",
+      "family_index": 0,
+      "per_family_instance_index": 0,
+      "run_name": "BM_ReplayInline/min_time:2.000/real_time",
+      "run_type": "aggregate",
+      "repetitions": 5,
+      "threads": 1,
+      "aggregate_name": "cv",
+      "aggregate_unit": "percentage",
+      "iterations": 5,
+      "real_time": 1.0325266213283087e-03,
+      "cpu_time": 9.9700724441505553e-04,
+      "time_unit": "ms",
+      "book_msgs/s": 1.0323848057101337e-03,
+      "bytes_per_second": 1.0323848056232219e-03,
+      "frames/s": 1.0323848057368938e-03
+    }
+  ]
+}

@@ -1,0 +1,71 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Both runners are native arm64, i.e. the same ISA as the M1 dev machine and the
+  # Ampere deployment target: no emulation gap between CI and production.
+  test:
+    name: ${{ matrix.os }} / ${{ matrix.preset }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04-arm, macos-14]
+        preset: [release, asan-ubsan, tsan]
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends clang-18 ninja-build libssl-dev zlib1g-dev
+          echo "CC=clang-18" >> "$GITHUB_ENV"
+          echo "CXX=clang++-18" >> "$GITHUB_ENV"
+          # TSan's shadow-memory layout breaks with the high mmap ASLR entropy of
+          # recent kernels ("unexpected memory mapping"); lower it for the test run.
+          sudo sysctl vm.mmap_rnd_bits=28
+
+      - name: Install dependencies (macOS)
+        if: runner.os == 'macOS'
+        run: brew install ninja openssl@3
+
+      - name: Configure
+        run: cmake --preset ${{ matrix.preset }} -G Ninja
+
+      - name: Build
+        run: cmake --build --preset ${{ matrix.preset }}
+
+      - name: Test
+        run: ctest --preset ${{ matrix.preset }}
+
+  # The Docker image builds with Ubuntu's default GCC, so make sure GCC compiles and
+  # passes the tests too (warnings reported, not fatal: GCC and Clang disagree on some).
+  gcc:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends g++ ninja-build libssl-dev zlib1g-dev
+      - run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release -DCB_BUILD_BENCH=OFF
+      - run: cmake --build build
+      - run: ctest --test-dir build --output-on-failure
+
+  docker:
+    runs-on: ubuntu-24.04-arm
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build linux/arm64 image (runs the unit tests in the build stage)
+        run: docker build --platform linux/arm64 -f deploy/Dockerfile -t cbook:ci .
+      - name: Smoke test the replay mode inside the image
+        run: |
+          docker run --rm -v "$PWD/tests/data:/data:ro" cbook:ci \
+            replay --file /data/golden_session.cbrec.gz --dump /tmp/out.txt
